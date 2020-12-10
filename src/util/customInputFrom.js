@@ -1,17 +1,25 @@
 import styled from "styled-components";
+import { connect } from "react-redux";
 
-export const CustomInput = (props) => {
+const CustomInputFrom = (props) => {
     return (
         <Wrapper>
             <Select onChange={props.selectChange}>
-                <option>UZS</option>
-                <option>USD</option>
-                <option>RUB</option>
+                {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <Input type="number" />
+            <Input type="number" onChange={props.inputChange} />
         </Wrapper>
     );
-}
+};
+
+
+const mapStateToProps = (state) => ({
+    currencies: state.currencies
+});
+
+
+
+export default connect(mapStateToProps)(CustomInputFrom);
 
 const Wrapper = styled.div`
     width: 250px;
@@ -37,4 +45,6 @@ const Input = styled.input`
     width: 70%; 
     border: none;
     outline: none; 
+    font-weight: 700;
+    font-size: 20px; 
 `;

@@ -1,26 +1,52 @@
-import { useState } from "react";
-import { CustomInput } from "./util/myInput";
+import { useEffect, useState } from "react";
+import CustomInputFrom from "./util/customInputFrom";
+import CustomInputTo from "./util/customInputTo";
 import { CustomButton } from "./util/myButton";
 import styled from "styled-components";
+import { getCurrencies } from "./store";
+import { connect } from "react-redux";
 
-const Converter = () => {
-    const [from, setFrom] = useState("RUB");
-    const [to, setTo] = useState([]);
+const Converter = (props) => {
+    const [from, setFrom] = useState({ currency: "", amount: "" });
+    const [to, setTo] = useState([
+        {
+            currency: "",
+            amount: ""
+        }
+    ]);
+
+    useEffect(() => {
+        props.getCurrencies();
+    }, []);
 
     const selectChangeHandler = (e) => {
-        setFrom(e.target.value);
+        setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
+    };
+
+    const inputChangeHandler = (e) => {
+        setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
     }
 
     return (
         <Wrapper>
-            <CustomInput selectChange={selectChangeHandler} />
+            <CustomInputFrom selectChange={selectChangeHandler} inputChange={inputChangeHandler} />
+
             <div className="equal"><span /><span /></div>
-            <CustomInput selectChange={selectChangeHandler} />
+
+            {
+                to.map(e => <CustomInputTo selectChange={selectChangeHandler} />)
+            }
+
+            <CustomButton />
         </Wrapper>
     );
-}
+};
 
-export default Converter;
+const mapDispatchToProps = {
+    getCurrencies
+};
+
+export default connect(null, mapDispatchToProps)(Converter);
 
 const Wrapper = styled.div`
     display: flex;
