@@ -8,7 +8,7 @@ const CustomInputTo = (props) => {
                 <option defaultValue >SELECT</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <Input value={isNaN(props.number) ? 0 : parseFloat(props.number).toFixed()} />
+            <Input value={isNaN(props.number) ? 0 : parseFloat(props.number).toFixed()} readOnly />
         </Wrapper>
     );
 };

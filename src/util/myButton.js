@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CustomButton = () => <Button> + </Button>
+export const CustomButton = (props) => <Button onClick={props.whenClicked}> + </Button>
 
 const Button = styled.button`
     background-color: #34eb43;

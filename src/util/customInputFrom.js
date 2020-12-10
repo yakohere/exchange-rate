@@ -13,7 +13,6 @@ const CustomInputFrom = (props) => {
     );
 };
 
-
 const mapStateToProps = (state) => ({
     currencies: state.currencies
 });

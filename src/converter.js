@@ -8,38 +8,47 @@ import { connect } from "react-redux";
 import axios from "axios";
 
 const Converter = (props) => {
-    const [from, setFrom] = useState({ currency: "", amount: "" });
-    const [to, setTo] = useState({ currency: "", amount: "0" });
+    const [from, setFrom] = useState({ currency: "", amount: 0 });
+    const [to, setTo] = useState([{ id: 1, currency: "", amount: 0 }]);
     const [rates, setRates] = useState([]);
 
     useEffect(() => {
         props.getCurrencies();
     }, []);
 
-    const currencyFromChange = (e) => {
+    const fromSelectFieldChange = (e) => {
         setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
-
+        console.log(from);
         axios.get(`https://api.exchangeratesapi.io/latest?base=${e.target.value}`).then(res => {
             setRates(res.data.rates);
         });
     };
 
-    const inputFrom = (e) => {
+    const fromAmountFieldChange = (e) => {
         setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
-        setTo((prevState) => ({ ...prevState, amount: e.target.value * rates[to.currency] }))
+        console.log(from);
+        // setTo(to.map(el => el.amount = e.target.value * rates[el.currency]));
+        //setTo(to.map(el => el.amount * 2));
     };
 
-    const currencyToChange = (e) => {
-        setTo((prevState) => ({ ...prevState, currency: e.target.value }));
+    const toSelectFieldChange = (e, id) => {
+        let index = to.findIndex(x => x.id === id);
+        let temporaryArray = to.slice();
+        temporaryArray[index]["currency"] = e.target.value;
+        setTo(temporaryArray);
+        console.log(to);
+    };
 
+    const addCurrencyHandler = () => {
+        setTo(prevState => [...prevState, { id: prevState.length + 1, currency: "", amount: 0 }])
     };
 
     return (
         <Wrapper>
-            <CustomInputFrom selectChange={currencyFromChange} inputChange={inputFrom} />
+            <CustomInputFrom selectChange={fromSelectFieldChange} inputChange={fromAmountFieldChange} />
             <div className="equal"><span /><span /></div>
-            <CustomInputTo selectChange={currencyToChange} number={to.amount} />
-            <CustomButton />
+            {to.map((el) => <CustomInputTo key={el.id} selectChange={(e) => toSelectFieldChange(e, el.id)} number={el.amount} />)}
+            <CustomButton whenClicked={addCurrencyHandler} />
         </Wrapper>
     );
 };
