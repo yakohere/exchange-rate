@@ -5,9 +5,10 @@ const CustomInputTo = (props) => {
     return (
         <Wrapper>
             <Select onChange={props.selectChange}>
+                <option defaultValue >SELECT</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <Input type="number" onChange={props.inputChange} />
+            <Input value={isNaN(props.number) ? 0 : parseFloat(props.number).toFixed()} />
         </Wrapper>
     );
 };
@@ -31,7 +32,7 @@ const Wrapper = styled.div`
 
 const Select = styled.select`
     border-radius: 5px;
-    width: 30%;
+    width: 45%;
     border: none;
     outline: none;
     font-weight: 700;
@@ -40,7 +41,7 @@ const Select = styled.select`
 
 const Input = styled.input`
     border-radius: 5px;
-    width: 70%; 
+    width: 55%;  
     border: none;
     outline: none; 
     font-weight: 700;

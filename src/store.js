@@ -11,7 +11,6 @@ export const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case ACTION_TYPES.GET_CURRENCIES:
-            console.log(action.payload.data.rates);
             return {
                 ...state,
                 currencies: [...Object.getOwnPropertyNames(action.payload.data.rates)],

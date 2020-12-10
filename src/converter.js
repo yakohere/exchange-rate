@@ -5,38 +5,40 @@ import { CustomButton } from "./util/myButton";
 import styled from "styled-components";
 import { getCurrencies } from "./store";
 import { connect } from "react-redux";
+import axios from "axios";
 
 const Converter = (props) => {
     const [from, setFrom] = useState({ currency: "", amount: "" });
-    const [to, setTo] = useState([
-        {
-            currency: "",
-            amount: ""
-        }
-    ]);
+    const [to, setTo] = useState({ currency: "", amount: "0" });
+    const [rates, setRates] = useState([]);
 
     useEffect(() => {
         props.getCurrencies();
     }, []);
 
-    const selectChangeHandler = (e) => {
+    const currencyFromChange = (e) => {
         setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
+
+        axios.get(`https://api.exchangeratesapi.io/latest?base=${e.target.value}`).then(res => {
+            setRates(res.data.rates);
+        });
     };
 
-    const inputChangeHandler = (e) => {
+    const inputFrom = (e) => {
         setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
-    }
+        setTo((prevState) => ({ ...prevState, amount: e.target.value * rates[to.currency] }))
+    };
+
+    const currencyToChange = (e) => {
+        setTo((prevState) => ({ ...prevState, currency: e.target.value }));
+
+    };
 
     return (
         <Wrapper>
-            <CustomInputFrom selectChange={selectChangeHandler} inputChange={inputChangeHandler} />
-
+            <CustomInputFrom selectChange={currencyFromChange} inputChange={inputFrom} />
             <div className="equal"><span /><span /></div>
-
-            {
-                to.map(e => <CustomInputTo selectChange={selectChangeHandler} />)
-            }
-
+            <CustomInputTo selectChange={currencyToChange} number={to.amount} />
             <CustomButton />
         </Wrapper>
     );

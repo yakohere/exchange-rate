@@ -5,9 +5,10 @@ const CustomInputFrom = (props) => {
     return (
         <Wrapper>
             <Select onChange={props.selectChange}>
+                <option defaultValue="selected">SELECT</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <Input type="number" onChange={props.inputChange} />
+            <Input type="number" onChange={props.inputChange} defaultValue="0" />
         </Wrapper>
     );
 };
@@ -16,8 +17,6 @@ const CustomInputFrom = (props) => {
 const mapStateToProps = (state) => ({
     currencies: state.currencies
 });
-
-
 
 export default connect(mapStateToProps)(CustomInputFrom);
 
@@ -32,18 +31,17 @@ const Wrapper = styled.div`
 `;
 
 const Select = styled.select`
-    border-radius: 5px;
-    width: 30%;
     border: none;
+    border-radius: 5px;
     outline: none;
     font-weight: 700;
     font-size: 20px; 
 `;
 
 const Input = styled.input`
-    border-radius: 5px;
-    width: 70%; 
+    width: 55%; 
     border: none;
+    border-radius: 5px;
     outline: none; 
     font-weight: 700;
     font-size: 20px; 
