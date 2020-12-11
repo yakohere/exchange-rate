@@ -18,25 +18,29 @@ const Converter = (props) => {
 
     const fromSelectFieldChange = (e) => {
         setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
-        console.log(from);
+
         axios.get(`https://api.exchangeratesapi.io/latest?base=${e.target.value}`).then(res => {
             setRates(res.data.rates);
+            let temporaryArray = to.slice();
+            temporaryArray.map(array => array.amount = from.amount * res.data.rates[array.currency]);
+            setTo(temporaryArray);
         });
     };
 
     const fromAmountFieldChange = (e) => {
         setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
-        console.log(from);
-        // setTo(to.map(el => el.amount = e.target.value * rates[el.currency]));
-        //setTo(to.map(el => el.amount * 2));
+        let temporaryArray = to.slice();
+        temporaryArray.map(array => array.amount = e.target.value * rates[array.currency]);
+        setTo(temporaryArray);
     };
 
     const toSelectFieldChange = (e, id) => {
         let index = to.findIndex(x => x.id === id);
         let temporaryArray = to.slice();
         temporaryArray[index]["currency"] = e.target.value;
+        temporaryArray.map(array => array.amount = from.amount * rates[array.currency]);
         setTo(temporaryArray);
-        console.log(to);
+
     };
 
     const addCurrencyHandler = () => {
@@ -61,8 +65,10 @@ export default connect(null, mapDispatchToProps)(Converter);
 
 const Wrapper = styled.div`
     display: flex;
+    flex-wrap: wrap;
     width: auto; 
     align-items: center;
+    overflow: auto;
 
     .equal {
         width: 100px;
