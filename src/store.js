@@ -6,6 +6,7 @@ export const ACTION_TYPES = {
     CHANGE_FROM_AMOUNT: "CHANGE_FROM_AMOUNT",
     CHANGE_TO_CURRENCY: "CHANGE_TO_CURRENCY",
     ADD_TO: "ADD_TO",
+    REMOVE_TO: "REMOVE_TO"
 };
 
 export const initialState = {
@@ -96,6 +97,14 @@ export default (state = initialState, action) => {
                 ]
             };
 
+        case ACTION_TYPES.REMOVE_TO:
+            return {
+                ...state,
+                toes: [
+                    ...state.toes.filter(toEl => toEl.id !== action.payload),
+                ]
+            };
+
         default:
             return state;
     }
@@ -135,3 +144,10 @@ export const add_to = () => {
         payload: []
     };
 };
+
+export const remove_to = (id) => {
+    return {
+        type: ACTION_TYPES.REMOVE_TO,
+        payload: id
+    }
+}

@@ -5,7 +5,6 @@ import DeleteIcon from "../icons/delete.svg"
 const CustomInputTo = (props) => {
     return (
         <Wrapper>
-            <h2>TO</h2>
             <Input>
                 <Select onChange={props.toCurrencyChange}>
                     <option defaultValue="selected">{props.toCurrency}</option>

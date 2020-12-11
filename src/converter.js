@@ -2,22 +2,17 @@ import { useEffect, useState } from "react";
 import CustomInputFrom from "./util/customInputFrom";
 import CustomInputTo from "./util/customInputTo";
 import styled from "styled-components";
-import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to } from "./store";
+import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to, remove_to } from "./store";
 import { connect } from "react-redux";
 import AddIcon from "./icons/add.svg";
 import ChangeIcon from "./icons/change.svg";
 
 const Converter = (props) => {
-    const { change_from_currency, change_from_amount, change_to_currency, get_initial_values, add_to, toes, state } = props;
+    const { change_from_currency, change_from_amount, change_to_currency, get_initial_values, add_to, toes, remove_to } = props;
 
     useEffect(() => {
         get_initial_values();
     }, []);
-
-
-    // const removeToHandler = (id) => {
-    //     setTo(prevState => [...prevState.filter(el => el.id !== id)]);
-    // };
 
     return (
         <Wrapper>
@@ -29,16 +24,22 @@ const Converter = (props) => {
 
                 <img src={ChangeIcon} className="change" />
 
-                {toes.map((to) =>
-                    <CustomInputTo
-                        key={to.id}
-                        toCurrency={to.currency}
-                        toAmount={to.amount}
-                        iconDisplay={to.id === 1 ? "none" : "block"}
-                        toCurrencyChange={(e) => change_to_currency(e.target.value, to.id)}
-                    // removeTo={() => removeToHandler(to.id)}
-                    />
-                )}
+                <Wrapper2>
+                    <h2>TO</h2>
+
+                    <Toes>
+                        {toes.map((to) =>
+                            <CustomInputTo
+                                key={to.id}
+                                toCurrency={to.currency}
+                                toAmount={to.amount}
+                                iconDisplay={to.id === 1 ? "none" : "block"}
+                                toCurrencyChange={(e) => change_to_currency(e.target.value, to.id)}
+                                removeTo={() => remove_to(to.id)}
+                            />
+                        )}
+                    </Toes>
+                </Wrapper2>
 
                 <img src={AddIcon} onClick={() => add_to()} className="add" />
             </Inputs>
@@ -58,10 +59,18 @@ const mapDispatchToProps = {
     change_from_amount,
     get_initial_values,
     change_to_currency,
-    add_to
+    add_to,
+    remove_to
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Converter);
+
+
+const Wrapper2 = styled.div``;
+
+const Toes = styled.div`
+    display: flex;
+`;
 
 const Inputs = styled.div`
     display: flex;
@@ -78,6 +87,7 @@ const Inputs = styled.div`
         min-width: 50px;
         margin: 0 15px;
         margin-top: 70px;
+         cursor: pointer;
     }
 `;
 
