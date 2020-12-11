@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Converter from "./converter";
-import { get_initial_values, add_converter } from "./store";
+import { get_initial_values, add_converter } from "./store/actions";
 import AddIcon from "./icons/add.svg";
 
 const Converters = (props) => {

@@ -1,15 +1,5 @@
 import axios from "axios";
-
-export const ACTION_TYPES = {
-    FETCH_INITIAL_VALUES: "FETCH_INITIAL_VALUES",
-    CHANGE_FROM_CURRENCY: "CHANGE_FROM_CURRENCY",
-    CHANGE_FROM_AMOUNT: "CHANGE_FROM_AMOUNT",
-    CHANGE_TO_CURRENCY: "CHANGE_TO_CURRENCY",
-    ADD_TO: "ADD_TO",
-    REMOVE_TO: "REMOVE_TO",
-    ADD_CONVERTER: "ADD_CONVERTER"
-
-};
+import { ACTION_TYPES } from "./actionTypes";
 
 export const initialState = {
     converters: [
@@ -32,7 +22,6 @@ export const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-
         case ACTION_TYPES.FETCH_INITIAL_VALUES:
             return {
                 ...state,
@@ -159,54 +148,4 @@ export default (state = initialState, action) => {
         default:
             return state;
     };
-};
-
-export const change_from_currency = (base, converterId) => async (dispatch) => {
-    const res = await axios.get(`https://api.exchangeratesapi.io/latest?base=${base}`);
-    dispatch({
-        type: ACTION_TYPES.CHANGE_FROM_CURRENCY,
-        payload: { res, converterId }
-    });
-};
-
-export const change_from_amount = (amount, converterId) => {
-    return {
-        type: ACTION_TYPES.CHANGE_FROM_AMOUNT,
-        payload: { amount, converterId }
-    };
-};
-
-export const get_initial_values = () => async (dispatch) => {
-    dispatch({
-        type: ACTION_TYPES.FETCH_INITIAL_VALUES,
-        payload: await axios.get("https://api.exchangeratesapi.io/latest")
-    });
-};
-
-export const change_to_currency = (currency, id, converterId) => {
-    return {
-        type: ACTION_TYPES.CHANGE_TO_CURRENCY,
-        payload: { currency, id, converterId }
-    };
-};
-
-export const add_to = (converterId) => {
-    return {
-        type: ACTION_TYPES.ADD_TO,
-        payload: converterId
-    };
-};
-
-export const remove_to = (id, converterId) => {
-    return {
-        type: ACTION_TYPES.REMOVE_TO,
-        payload: { id, converterId }
-    };
-};
-
-export const add_converter = () => async (dispatch) => {
-    dispatch({
-        type: ACTION_TYPES.ADD_CONVERTER,
-        payload: await axios.get("https://api.exchangeratesapi.io/latest")
-    });
 };

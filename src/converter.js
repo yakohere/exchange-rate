@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import CustomInputFrom from "./util/customInputFrom";
 import CustomInputTo from "./util/customInputTo";
 import styled from "styled-components";
-import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to, remove_to } from "./store";
+import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to, remove_to } from "./store/actions";
 import { connect } from "react-redux";
 import AddIcon from "./icons/add.svg";
 import ArrowIcon from "./icons/arrow.svg";
