@@ -8,37 +8,39 @@ import AddIcon from "./icons/add.svg";
 import ChangeIcon from "./icons/change.svg";
 
 const Converter = (props) => {
-    const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to } = props;
+    const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to, converterId, currencies, defFromCurr, toes } = props;
+
     return (
         <Wrapper>
             <Inputs>
                 <CustomInputFrom
-                    currencyChange={(e) => change_from_currency(e.target.value, props.converterId)}
-                    amountChange={(e) => change_from_amount(e.target.value, props.converterId)}
-                    addClicked={() => add_to(props.converterId)}
-                    currencies={props.currencies}
-                    defFromCurr={props.defFromCurr}
+                    currencyChange={(e) => change_from_currency(e.target.value, converterId)}
+                    amountChange={(e) => change_from_amount(e.target.value, converterId)}
+                    addClicked={() => add_to(converterId)}
+                    currencies={currencies}
+                    defFromCurr={defFromCurr}
                 />
+
                 <img src={ChangeIcon} className="change" />
 
                 <Wrapper2>
                     <h2>TO</h2>
                     <Toes>
-                        {props.toes.map((to) =>
+                        {toes.map((to) =>
                             <CustomInputTo
                                 key={to.id}
                                 toCurrency={to.currency}
                                 toAmount={to.amount}
                                 iconDisplay={to.id === 1 ? "none" : "block"}
-                                toCurrencyChange={(e) => change_to_currency(e.target.value, to.id, props.converterId)}
-                                removeTo={() => remove_to(to.id, props.converterId)}
-                                currencies={props.currencies}
+                                toCurrencyChange={(e) => change_to_currency(e.target.value, to.id, converterId)}
+                                removeTo={() => remove_to(to.id, converterId)}
+                                currencies={currencies}
                             />
                         )}
                     </Toes>
                 </Wrapper2>
 
-                <img src={AddIcon} onClick={() => add_to()} className="add" />
+                <img src={AddIcon} onClick={() => add_to(converterId)} className="add" />
             </Inputs>
         </Wrapper>
     );

@@ -52,13 +52,14 @@ export default (state = initialState, action) => {
             };
 
         case ACTION_TYPES.CHANGE_FROM_CURRENCY:
+            console.log(action.payload);
             return {
                 ...state,
                 converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
                     ...converter,
                     rates: action.payload.res.data.rates,
                     from: {
-                        ...state.from,
+                        ...converter.from,
                         currency: action.payload.res.data.base
                     },
                     toes: converter.toes.map(to => {
@@ -89,6 +90,7 @@ export default (state = initialState, action) => {
             };
 
         case ACTION_TYPES.CHANGE_TO_CURRENCY:
+            console.log(action.payload);
             return {
                 ...state,
                 converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
@@ -102,9 +104,10 @@ export default (state = initialState, action) => {
             };
 
         case ACTION_TYPES.ADD_TO:
+            console.log(action.payload);
             return {
                 ...state,
-                converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
+                converters: state.converters.map(converter => converter.id === action.payload ? {
                     ...converter,
                     toes: [
                         ...converter.toes,
