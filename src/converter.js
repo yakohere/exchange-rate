@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import CustomInputFrom from "./util/customInputFrom";
 import CustomInputTo from "./util/customInputTo";
-import { CustomButton } from "./util/myButton";
 import styled from "styled-components";
-import { getCurrencies } from "./store";
+import { change_from_currency, change_from_amount, get_initial_values } from "./store";
 import { connect } from "react-redux";
 import axios from "axios";
 import AddIcon from "./icons/add.svg";
@@ -13,27 +12,32 @@ const Converter = (props) => {
     const [to, setTo] = useState([{ id: 1, currency: "", amount: 0 }]);
     const [rates, setRates] = useState([]);
 
+    const { change_from_currency, change_from_amount, get_initial_values, toes, state } = props;
+
+    console.log(state);
+
     useEffect(() => {
-        props.getCurrencies();
+        get_initial_values();
     }, []);
 
-    const fromSelectFieldChange = (e) => {
-        setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
+    // const fromSelectFieldChange = (e) => {
+    //     setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
 
-        axios.get(`https://api.exchangeratesapi.io/latest?base=${e.target.value}`).then(res => {
-            setRates(res.data.rates);
-            let temporaryArray = to.slice();
-            temporaryArray.map(array => array.amount = from.amount * res.data.rates[array.currency]);
-            setTo(temporaryArray);
-        });
-    };
+    //     axios.get(`https://api.exchangeratesapi.io/latest?base=${e.target.value}`).then(res => {
+    //         setRates(res.data.rates);
+    //         let temporaryArray = to.slice();
+    //         temporaryArray.map(array => array.amount = from.amount * res.data.rates[array.currency]);
+    //         setTo(temporaryArray);
+    //     });
+    // };
 
-    const fromAmountFieldChange = (e) => {
-        setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
-        let temporaryArray = to.slice();
-        temporaryArray.map(array => array.amount = e.target.value * rates[array.currency]);
-        setTo(temporaryArray);
-    };
+    // const fromAmountFieldChange = (e) => {
+    //     setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
+    //     //currencies
+    //     let temporaryArray = to.slice();
+    //     temporaryArray.map(array => array.amount = e.target.value * rates[array.currency]);
+    //     setTo(temporaryArray);
+    // };
 
     const toSelectFieldChange = (e, id) => {
         let index = to.findIndex(x => x.id === id);
@@ -54,16 +58,20 @@ const Converter = (props) => {
     return (
         <Wrapper>
             <Inputs>
-                <CustomInputFrom selectChange={fromSelectFieldChange} inputChange={fromAmountFieldChange} />
+                <CustomInputFrom
+                    currencyChange={(e) => change_from_currency(e.target.value)}
+                    amountChange={(e) => change_from_amount(e.target.value)}
+                />
+
                 <div className="equal"><span /><span /></div>
-                {to.map((el) =>
+                {toes.map((to) =>
                     <CustomInputTo
-                        key={el.id}
-                        selectChange={(e) => toSelectFieldChange(e, el.id)}
-                        number={el.amount}
-                        toLength={to.length}
-                        iconDisplay={el.id === 1 ? "none" : "block"}
-                        removeTo={() => removeToHandler(el.id)}
+                        key={to.id}
+                        toCurrency={to.currency}
+                        toAmount={to.amount}
+                        iconDisplay={to.id === 1 ? "none" : "block"}
+                        removeTo={() => removeToHandler(to.id)}
+                        selectChange={(e) => toSelectFieldChange(e, to.id)}
                     />
                 )}
                 <img src={AddIcon} onClick={addCurrencyHandler} />
@@ -72,11 +80,20 @@ const Converter = (props) => {
     );
 };
 
+const mapStateToProps = (state) => ({
+    currencies: state.currencies,
+    state: state,
+    toes: state.toes
+});
+
+
 const mapDispatchToProps = {
-    getCurrencies
+    change_from_currency,
+    change_from_amount,
+    get_initial_values
 };
 
-export default connect(null, mapDispatchToProps)(Converter);
+export default connect(mapStateToProps, mapDispatchToProps)(Converter);
 
 const Inputs = styled.div`
     display: flex;

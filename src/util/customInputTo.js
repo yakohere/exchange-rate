@@ -6,10 +6,10 @@ const CustomInputTo = (props) => {
     return (
         <Wrapper>
             <Select onChange={props.selectChange}>
-                <option defaultValue >{props.currencies[0]}</option>
+                <option defaultValue="selected">{props.toCurrency}</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <Input value={isNaN(props.number) ? 0 : parseFloat(props.number).toFixed()} readOnly />
+            <Input value={props.toAmount} readOnly />
             <img src={DeleteIcon} onClick={props.removeTo} style={{ display: props.iconDisplay }} />
         </Wrapper>
     );
@@ -17,7 +17,8 @@ const CustomInputTo = (props) => {
 
 
 const mapStateToProps = (state) => ({
-    currencies: state.currencies
+    currencies: state.currencies,
+    to: state.to
 });
 
 export default connect(mapStateToProps)(CustomInputTo);

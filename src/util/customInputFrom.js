@@ -4,17 +4,18 @@ import { connect } from "react-redux";
 const CustomInputFrom = (props) => {
     return (
         <Wrapper>
-            <Select onChange={props.selectChange}>
-                <option defaultValue="selected">{props.currencies[0]}</option>
+            <Select onChange={props.currencyChange}>
+                <option defaultValue="selected">{props.from}</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <Input type="number" onChange={props.inputChange} defaultValue="0" />
+            <Input type="number" onChange={props.amountChange} defaultValue="1" />
         </Wrapper>
     );
 };
 
 const mapStateToProps = (state) => ({
-    currencies: state.currencies
+    currencies: state.currencies,
+    from: state.from.currency
 });
 
 export default connect(mapStateToProps)(CustomInputFrom);
