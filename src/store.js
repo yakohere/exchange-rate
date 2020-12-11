@@ -1,5 +1,4 @@
 import axios from "axios";
-import { act } from "react-dom/test-utils";
 
 export const ACTION_TYPES = {
     FETCH_INITIAL_VALUES: "FETCH_INITIAL_VALUES",
@@ -7,7 +6,9 @@ export const ACTION_TYPES = {
     CHANGE_FROM_AMOUNT: "CHANGE_FROM_AMOUNT",
     CHANGE_TO_CURRENCY: "CHANGE_TO_CURRENCY",
     ADD_TO: "ADD_TO",
-    REMOVE_TO: "REMOVE_TO"
+    REMOVE_TO: "REMOVE_TO",
+    ADD_CONVERTER: "ADD_CONVERTER"
+
 };
 
 export const initialState = {
@@ -131,9 +132,33 @@ export default (state = initialState, action) => {
                 } : converter)
             };
 
+        case ACTION_TYPES.ADD_CONVERTER:
+            return {
+                ...state,
+                converters: [
+                    ...state.converters,
+                    {
+                        id: state.converters[state.converters.length - 1].id + 1,
+                        currencies: [...Object.getOwnPropertyNames(action.payload.data.rates)],
+                        rates: action.payload.data.rates,
+                        from: {
+                            currency: action.payload.data.base,
+                            amount: 1
+                        },
+                        toes: [
+                            {
+                                id: 1,
+                                currency: Object.keys(action.payload.data.rates)[13],
+                                amount: 1 * action.payload.data.rates[Object.keys(action.payload.data.rates)[13]]
+                            }
+                        ]
+                    }
+                ]
+            };
+
         default:
             return state;
-    }
+    };
 };
 
 export const change_from_currency = (base, converterId) => async (dispatch) => {
@@ -176,5 +201,12 @@ export const remove_to = (id, converterId) => {
     return {
         type: ACTION_TYPES.REMOVE_TO,
         payload: { id, converterId }
-    }
-}
+    };
+};
+
+export const add_converter = () => async (dispatch) => {
+    dispatch({
+        type: ACTION_TYPES.ADD_CONVERTER,
+        payload: await axios.get("https://api.exchangeratesapi.io/latest")
+    });
+};

@@ -2,16 +2,13 @@ import styled from "styled-components";
 
 const CustomInputFrom = (props) => {
     return (
-        <div>
-            <h2>FROM</h2>
-            <Input>
-                <Select onChange={props.currencyChange}>
-                    <option defaultValue="selected">{props.defFromCurr}</option>
-                    {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
-                </Select>
-                <TextField type="number" onChange={props.amountChange} defaultValue="1" />
-            </Input>
-        </div>
+        <Input>
+            <Select onChange={props.currencyChange}>
+                <option defaultValue="selected">{props.defFromCurr}</option>
+                {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
+            </Select>
+            <TextField type="number" onChange={props.amountChange} defaultValue="1" />
+        </Input>
     );
 };
 

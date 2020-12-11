@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to, remove_to } from "./store";
 import { connect } from "react-redux";
 import AddIcon from "./icons/add.svg";
-import ChangeIcon from "./icons/change.svg";
+import ArrowIcon from "./icons/arrow.svg";
 
 const Converter = (props) => {
     const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to, converterId, currencies, defFromCurr, toes } = props;
@@ -21,24 +21,21 @@ const Converter = (props) => {
                     defFromCurr={defFromCurr}
                 />
 
-                <img src={ChangeIcon} className="change" />
+                <img src={ArrowIcon} className="arrow" />
 
-                <Wrapper2>
-                    <h2>TO</h2>
-                    <Toes>
-                        {toes.map((to) =>
-                            <CustomInputTo
-                                key={to.id}
-                                toCurrency={to.currency}
-                                toAmount={to.amount}
-                                iconDisplay={to.id === 1 ? "none" : "block"}
-                                toCurrencyChange={(e) => change_to_currency(e.target.value, to.id, converterId)}
-                                removeTo={() => remove_to(to.id, converterId)}
-                                currencies={currencies}
-                            />
-                        )}
-                    </Toes>
-                </Wrapper2>
+                <Toes>
+                    {toes.map((to) =>
+                        <CustomInputTo
+                            key={to.id}
+                            toCurrency={to.currency}
+                            toAmount={to.amount}
+                            iconDisplay={to.id === 1 ? "none" : "block"}
+                            toCurrencyChange={(e) => change_to_currency(e.target.value, to.id, converterId)}
+                            removeTo={() => remove_to(to.id, converterId)}
+                            currencies={currencies}
+                        />
+                    )}
+                </Toes>
 
                 <img src={AddIcon} onClick={() => add_to(converterId)} className="add" />
             </Inputs>
@@ -57,34 +54,28 @@ const mapDispatchToProps = {
 
 export default connect(null, mapDispatchToProps)(Converter);
 
-
-const Wrapper2 = styled.div``;
+const Wrapper = styled.div`
+    display: flex;   
+    margin: 10px 0; 
+`;
 
 const Toes = styled.div`
     display: flex;
 `;
 
 const Inputs = styled.div`
-    display: flex;
-    overflow-x: auto;
+    display: flex; 
     align-items: center;
 
-    .change {   
+    .arrow {   
         min-width: 50px;
-        margin: 0 15px;
-        margin-top: 70px;
+        margin: 0 15px; 
     }
 
     .add {
         min-width: 50px;
-        margin: 0 15px;
-        margin-top: 70px;
-         cursor: pointer;
+        margin: 0 15px; 
+        cursor: pointer;
     }
 `;
 
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-`;
