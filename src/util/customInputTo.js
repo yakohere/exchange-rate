@@ -16,7 +16,7 @@ const CustomInputTo = (props) => {
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
             <TextField value={numberWithSpaces(parseFloat(props.toAmount).toFixed(2))} readOnly />
-            <img id="remove" src={DeleteIcon} onClick={props.removeTo} style={{ display: props.iconDisplay }} />
+            <img id="remove" src={DeleteIcon} onClick={props.removeTo} style={{ display: props.iconDisplay }} alt="remove" />
         </Input>
     );
 };

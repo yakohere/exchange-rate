@@ -7,7 +7,7 @@ const CustomInputFrom = (props) => {
                 <option defaultValue="selected">{props.defFromCurr}</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
-            <TextField type="number" onChange={props.amountChange} defaultValue="1" />
+            <TextField type="number" onChange={props.amountChange} value={props.fromAmount} />
         </Input>
     );
 };

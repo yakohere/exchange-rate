@@ -3,16 +3,14 @@ import ReactDOM from 'react-dom';
 import Converters from "./converters";
 import './index.css';
 import { Provider } from "react-redux";
-import { applyMiddleware, createStore } from "redux";
-import thunk from "redux-thunk";
-import reducer from "./store";
-
-
-const store = createStore(reducer, applyMiddleware(thunk));
+import { store, persistor } from './store/store'
+import { PersistGate } from 'redux-persist/integration/react'
 
 ReactDOM.render(
   <Provider store={store}>
-    <Converters />
+    <PersistGate loading={null} persistor={persistor}>
+      <Converters />
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 );

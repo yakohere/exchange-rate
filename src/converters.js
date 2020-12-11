@@ -9,7 +9,10 @@ const Converters = (props) => {
     const { get_initial_values, add_converter } = props;
 
     useEffect(() => {
-        get_initial_values();
+        const persistedData = localStorage.getItem("persist:state");
+        if (!persistedData) {
+            get_initial_values();
+        }
     }, []);
 
     return (
@@ -25,10 +28,11 @@ const Converters = (props) => {
                     toes={converter.toes}
                     currencies={converter.currencies}
                     defFromCurr={converter.from.currency}
+                    fromAmount={converter.from.amount}
                 />
             })}
 
-            <img src={AddIcon} onClick={() => add_converter()} />
+            <img src={AddIcon} onClick={() => add_converter()} alt="add" />
         </Wrapper>
     );
 };
@@ -58,7 +62,7 @@ const Wrapper = styled.div`
 
     img {
         cursor: pointer;    
-        width: 50px;
+        width: 40px;
         margin-top: 15px;
    }
 `;

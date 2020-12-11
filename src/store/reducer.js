@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ACTION_TYPES } from "./actionTypes";
 
 export const initialState = {
@@ -12,7 +11,7 @@ export const initialState = {
             toes: [{
                 id: 1,
                 currency: "",
-                amount: 0
+                amount: ""
             }],
             currencies: [],
             rates: []
@@ -42,7 +41,6 @@ export default (state = initialState, action) => {
             };
 
         case ACTION_TYPES.CHANGE_FROM_CURRENCY:
-            console.log(action.payload);
             return {
                 ...state,
                 converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
@@ -67,7 +65,7 @@ export default (state = initialState, action) => {
                 converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
                     ...converter,
                     from: {
-                        ...state.from,
+                        ...converter.from,
                         amount: action.payload.amount
                     },
                     toes: converter.toes.map(to => {
@@ -80,7 +78,6 @@ export default (state = initialState, action) => {
             };
 
         case ACTION_TYPES.CHANGE_TO_CURRENCY:
-            console.log(action.payload);
             return {
                 ...state,
                 converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
@@ -93,8 +90,7 @@ export default (state = initialState, action) => {
                 } : converter)
             };
 
-        case ACTION_TYPES.ADD_TO:
-            console.log(action.payload);
+        case ACTION_TYPES.ADD_TO: 
             return {
                 ...state,
                 converters: state.converters.map(converter => converter.id === action.payload ? {

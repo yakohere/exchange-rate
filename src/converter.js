@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import CustomInputFrom from "./util/customInputFrom";
 import CustomInputTo from "./util/customInputTo";
 import styled from "styled-components";
@@ -8,7 +7,7 @@ import AddIcon from "./icons/add.svg";
 import ArrowIcon from "./icons/arrow.svg";
 
 const Converter = (props) => {
-    const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to, converterId, currencies, defFromCurr, toes } = props;
+    const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to, converterId, currencies, defFromCurr, toes, fromAmount } = props;
 
     return (
         <Wrapper>
@@ -19,9 +18,10 @@ const Converter = (props) => {
                     addClicked={() => add_to(converterId)}
                     currencies={currencies}
                     defFromCurr={defFromCurr}
+                    fromAmount={fromAmount}
                 />
 
-                <img src={ArrowIcon} className="arrow" />
+                <img src={ArrowIcon} className="arrow" alt="arrow" />
 
                 <Toes>
                     {toes.map((to) =>
@@ -37,7 +37,7 @@ const Converter = (props) => {
                     )}
                 </Toes>
 
-                <img src={AddIcon} onClick={() => add_to(converterId)} className="add" />
+                <img src={AddIcon} onClick={() => add_to(converterId)} className="add" alt="add" />
             </Inputs>
         </Wrapper>
     );
@@ -73,7 +73,7 @@ const Inputs = styled.div`
     }
 
     .add {
-        min-width: 50px;
+        min-width: 40px;
         margin: 0 15px; 
         cursor: pointer;
     }
