@@ -44,14 +44,29 @@ const Converter = (props) => {
     };
 
     const addCurrencyHandler = () => {
-        setTo(prevState => [...prevState, { id: prevState.length + 1, currency: "", amount: 0 }])
+        setTo(prevState => [...prevState, { id: prevState[prevState.length - 1].id + 1, currency: "", amount: 0 }]);
+        console.log(to);
     };
+
+    const removeToHandler = (id) => {
+        setTo(prevState => [...prevState.filter(el => el.id !== id)]);
+        console.log(to);
+    }
 
     return (
         <Wrapper>
             <CustomInputFrom selectChange={fromSelectFieldChange} inputChange={fromAmountFieldChange} />
             <div className="equal"><span /><span /></div>
-            {to.map((el) => <CustomInputTo key={el.id} selectChange={(e) => toSelectFieldChange(e, el.id)} number={el.amount} />)}
+            {to.map((el) =>
+                <CustomInputTo
+                    key={el.id}
+                    selectChange={(e) => toSelectFieldChange(e, el.id)}
+                    number={el.amount}
+                    toLength={to.length}
+                    iconDisplay={el.id === 1 ? "none" : "block"}
+                    removeTo={() => removeToHandler(el.id)}
+                />
+            )}
             <CustomButton whenClicked={addCurrencyHandler} />
         </Wrapper>
     );

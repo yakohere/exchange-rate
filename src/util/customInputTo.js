@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { connect } from "react-redux";
+import DeleteIcon from "../icons/delete.svg"
 
 const CustomInputTo = (props) => {
     return (
@@ -9,6 +10,7 @@ const CustomInputTo = (props) => {
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
             <Input value={isNaN(props.number) ? 0 : parseFloat(props.number).toFixed()} readOnly />
+            <img src={DeleteIcon} onClick={props.removeTo} style={{ display: props.iconDisplay }} />
         </Wrapper>
     );
 };
