@@ -2,58 +2,22 @@ import { useEffect, useState } from "react";
 import CustomInputFrom from "./util/customInputFrom";
 import CustomInputTo from "./util/customInputTo";
 import styled from "styled-components";
-import { change_from_currency, change_from_amount, get_initial_values } from "./store";
+import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to } from "./store";
 import { connect } from "react-redux";
-import axios from "axios";
 import AddIcon from "./icons/add.svg";
+import ChangeIcon from "./icons/change.svg";
 
 const Converter = (props) => {
-    const [from, setFrom] = useState({ currency: "", amount: 0 });
-    const [to, setTo] = useState([{ id: 1, currency: "", amount: 0 }]);
-    const [rates, setRates] = useState([]);
-
-    const { change_from_currency, change_from_amount, get_initial_values, toes, state } = props;
-
-    console.log(state);
+    const { change_from_currency, change_from_amount, change_to_currency, get_initial_values, add_to, toes, state } = props;
 
     useEffect(() => {
         get_initial_values();
     }, []);
 
-    // const fromSelectFieldChange = (e) => {
-    //     setFrom((prevState) => ({ ...prevState, currency: e.target.value }));
 
-    //     axios.get(`https://api.exchangeratesapi.io/latest?base=${e.target.value}`).then(res => {
-    //         setRates(res.data.rates);
-    //         let temporaryArray = to.slice();
-    //         temporaryArray.map(array => array.amount = from.amount * res.data.rates[array.currency]);
-    //         setTo(temporaryArray);
-    //     });
+    // const removeToHandler = (id) => {
+    //     setTo(prevState => [...prevState.filter(el => el.id !== id)]);
     // };
-
-    // const fromAmountFieldChange = (e) => {
-    //     setFrom((prevState) => ({ ...prevState, amount: e.target.value }));
-    //     //currencies
-    //     let temporaryArray = to.slice();
-    //     temporaryArray.map(array => array.amount = e.target.value * rates[array.currency]);
-    //     setTo(temporaryArray);
-    // };
-
-    const toSelectFieldChange = (e, id) => {
-        let index = to.findIndex(x => x.id === id);
-        let temporaryArray = to.slice();
-        temporaryArray[index]["currency"] = e.target.value;
-        temporaryArray.map(array => array.amount = from.amount * rates[array.currency]);
-        setTo(temporaryArray);
-    };
-
-    const addCurrencyHandler = () => {
-        setTo(prevState => [...prevState, { id: prevState[prevState.length - 1].id + 1, currency: "", amount: 0 }]);
-    };
-
-    const removeToHandler = (id) => {
-        setTo(prevState => [...prevState.filter(el => el.id !== id)]);
-    };
 
     return (
         <Wrapper>
@@ -63,18 +27,20 @@ const Converter = (props) => {
                     amountChange={(e) => change_from_amount(e.target.value)}
                 />
 
-                <div className="equal"><span /><span /></div>
+                <img src={ChangeIcon} className="change" />
+
                 {toes.map((to) =>
                     <CustomInputTo
                         key={to.id}
                         toCurrency={to.currency}
                         toAmount={to.amount}
                         iconDisplay={to.id === 1 ? "none" : "block"}
-                        removeTo={() => removeToHandler(to.id)}
-                        selectChange={(e) => toSelectFieldChange(e, to.id)}
+                        toCurrencyChange={(e) => change_to_currency(e.target.value, to.id)}
+                    // removeTo={() => removeToHandler(to.id)}
                     />
                 )}
-                <img src={AddIcon} onClick={addCurrencyHandler} />
+
+                <img src={AddIcon} onClick={() => add_to()} className="add" />
             </Inputs>
         </Wrapper>
     );
@@ -90,7 +56,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     change_from_currency,
     change_from_amount,
-    get_initial_values
+    get_initial_values,
+    change_to_currency,
+    add_to
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Converter);
@@ -100,9 +68,16 @@ const Inputs = styled.div`
     overflow-x: auto;
     align-items: center;
 
-    img {
-        width: 50px;
-        cursor: pointer;
+    .change {   
+        min-width: 50px;
+        margin: 0 15px;
+        margin-top: 70px;
+    }
+
+    .add {
+        min-width: 50px;
+        margin: 0 15px;
+        margin-top: 70px;
     }
 `;
 
@@ -110,19 +85,4 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
-    .equal {
-        width: 100px;
-        height: 30px; 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-around;
-
-        span{
-            width: 30px;
-            height: 3px;
-            background-color: #000;
-        }
-    }
 `;

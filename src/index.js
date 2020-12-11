@@ -11,8 +11,7 @@ import reducer from "./store";
 const store = createStore(reducer, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <h2>Exchange Rate</h2>
+  <Provider store={store}> 
     <Converter />
   </Provider>,
   document.getElementById('root')

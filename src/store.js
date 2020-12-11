@@ -1,14 +1,11 @@
 import axios from "axios";
 
 export const ACTION_TYPES = {
+    FETCH_INITIAL_VALUES: "FETCH_INITIAL_VALUES",
     CHANGE_FROM_CURRENCY: "CHANGE_FROM_CURRENCY",
     CHANGE_FROM_AMOUNT: "CHANGE_FROM_AMOUNT",
-    FETCH_INITIAL_VALUES: "FETCH_INITIAL_VALUES",
-
-    CHANGE_TO: "CHANGE_TO",
+    CHANGE_TO_CURRENCY: "CHANGE_TO_CURRENCY",
     ADD_TO: "ADD_TO",
-    GET_CURRENCIES: "GET_CURRENCIES",
-    GET_RATES: "GET_RATES",
 };
 
 export const initialState = {
@@ -39,18 +36,26 @@ export default (state = initialState, action) => {
                 },
                 toes: state.toes.map(to => to.id === 1 ? {
                     ...to,
-                    currency: Object.keys(action.payload.data.rates)[0],
-                    amount: 1 * action.payload.data.rates[Object.keys(action.payload.data.rates)[0]]
+                    currency: Object.keys(action.payload.data.rates)[13],
+                    amount: 1 * action.payload.data.rates[Object.keys(action.payload.data.rates)[13]]
                 } : to),
             };
 
         case ACTION_TYPES.CHANGE_FROM_CURRENCY:
+            console.log(action.payload.data);
             return {
                 ...state,
+                rates: action.payload.data.rates,
                 from: {
                     ...state.from,
-                    currency: action.payload
-                }
+                    currency: action.payload.data.base
+                },
+                toes: state.toes.map(to => {
+                    return {
+                        ...to,
+                        amount: state.from.amount * action.payload.data.rates[to.currency]
+                    }
+                }),
             };
 
         case ACTION_TYPES.CHANGE_FROM_AMOUNT:
@@ -59,13 +64,36 @@ export default (state = initialState, action) => {
                 from: {
                     ...state.from,
                     amount: action.payload
-                }
+                },
+                toes: state.toes.map(to => {
+                    return {
+                        ...to,
+                        amount: action.payload * state.rates[to.currency]
+                    }
+                }),
             };
 
-        case ACTION_TYPES.GET_CURRENCIES:
+        case ACTION_TYPES.CHANGE_TO_CURRENCY:
             return {
                 ...state,
-                currencies: [...Object.getOwnPropertyNames(action.payload.data.rates)],
+                toes: state.toes.map(to => to.id === action.payload.id ? {
+                    ...to,
+                    currency: action.payload.currency,
+                    amount: state.from.amount * state.rates[action.payload.currency]
+                } : to),
+            };
+
+        case ACTION_TYPES.ADD_TO:
+            return {
+                ...state,
+                toes: [
+                    ...state.toes,
+                    {
+                        id: state.toes[state.toes.length - 1].id + 1,
+                        currency: state.toes[state.toes.length - 1].currency,
+                        amount: state.toes[state.toes.length - 1].amount
+                    }
+                ]
             };
 
         default:
@@ -73,11 +101,11 @@ export default (state = initialState, action) => {
     }
 };
 
-export const change_from_currency = (currency) => {
-    return {
+export const change_from_currency = (base) => async (dispatch) => {
+    dispatch({
         type: ACTION_TYPES.CHANGE_FROM_CURRENCY,
-        payload: currency
-    };
+        payload: await axios.get(`https://api.exchangeratesapi.io/latest?base=${base}`)
+    });
 };
 
 export const change_from_amount = (amount) => {
@@ -92,4 +120,18 @@ export const get_initial_values = () => async (dispatch) => {
         type: ACTION_TYPES.FETCH_INITIAL_VALUES,
         payload: await axios.get("https://api.exchangeratesapi.io/latest")
     });
-}
+};
+
+export const change_to_currency = (currency, id) => {
+    return {
+        type: ACTION_TYPES.CHANGE_TO_CURRENCY,
+        payload: { currency, id }
+    };
+};
+
+export const add_to = () => {
+    return {
+        type: ACTION_TYPES.ADD_TO,
+        payload: []
+    };
+};
