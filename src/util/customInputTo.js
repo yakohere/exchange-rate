@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { connect } from "react-redux";
 import DeleteIcon from "../icons/delete.svg"
 
 const CustomInputTo = (props) => {
@@ -17,15 +16,10 @@ const CustomInputTo = (props) => {
     );
 };
 
-
-const mapStateToProps = (state) => ({
-    currencies: state.currencies,
-});
-
-export default connect(mapStateToProps)(CustomInputTo);
+export default CustomInputTo;
 
 const Wrapper = styled.div`
-    margin: 0 10px;
+    margin-right: 10px;
     
     img { 
         width: 40px; 

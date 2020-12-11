@@ -1,30 +1,22 @@
 import styled from "styled-components";
-import { connect } from "react-redux";
 
 const CustomInputFrom = (props) => {
     return (
-        <Wrapper>
+        <div>
             <h2>FROM</h2>
             <Input>
                 <Select onChange={props.currencyChange}>
-                    <option defaultValue="selected">{props.from}</option>
+                    <option defaultValue="selected">{props.defFromCurr}</option>
                     {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
                 </Select>
                 <TextField type="number" onChange={props.amountChange} defaultValue="1" />
             </Input>
-        </Wrapper>
+        </div>
     );
 };
 
-const mapStateToProps = (state) => ({
-    currencies: state.currencies,
-    from: state.from.currency
-});
 
-export default connect(mapStateToProps)(CustomInputFrom);
-
-const Wrapper = styled.div` 
-`;
+export default CustomInputFrom;
 
 const Input = styled.div`
     width: 250px;

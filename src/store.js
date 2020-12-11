@@ -1,4 +1,5 @@
 import axios from "axios";
+import { act } from "react-dom/test-utils";
 
 export const ACTION_TYPES = {
     FETCH_INITIAL_VALUES: "FETCH_INITIAL_VALUES",
@@ -10,17 +11,22 @@ export const ACTION_TYPES = {
 };
 
 export const initialState = {
-    from: {
-        currency: "",
-        amount: 1
-    },
-    toes: [{
-        id: 1,
-        currency: "",
-        amount: 0
-    }],
-    currencies: [],
-    rates: []
+    converters: [
+        {
+            id: 1,
+            from: {
+                currency: "",
+                amount: 1
+            },
+            toes: [{
+                id: 1,
+                currency: "",
+                amount: 0
+            }],
+            currencies: [],
+            rates: []
+        }
+    ]
 };
 
 export default (state = initialState, action) => {
@@ -29,80 +35,97 @@ export default (state = initialState, action) => {
         case ACTION_TYPES.FETCH_INITIAL_VALUES:
             return {
                 ...state,
-                currencies: [...Object.getOwnPropertyNames(action.payload.data.rates)],
-                rates: action.payload.data.rates,
-                from: {
-                    ...state.from,
-                    currency: action.payload.data.base,
-                },
-                toes: state.toes.map(to => to.id === 1 ? {
-                    ...to,
-                    currency: Object.keys(action.payload.data.rates)[13],
-                    amount: 1 * action.payload.data.rates[Object.keys(action.payload.data.rates)[13]]
-                } : to),
+                converters: state.converters.map(converter => converter.id === 1 ? {
+                    ...converter,
+                    currencies: [...Object.getOwnPropertyNames(action.payload.data.rates)],
+                    rates: action.payload.data.rates,
+                    from: {
+                        ...converter.from,
+                        currency: action.payload.data.base,
+                    },
+                    toes: converter.toes.map(to => to.id === 1 ? {
+                        ...to,
+                        currency: Object.keys(action.payload.data.rates)[13],
+                        amount: 1 * action.payload.data.rates[Object.keys(action.payload.data.rates)[13]]
+                    } : to),
+                } : converter),
             };
 
         case ACTION_TYPES.CHANGE_FROM_CURRENCY:
-            console.log(action.payload.data);
             return {
                 ...state,
-                rates: action.payload.data.rates,
-                from: {
-                    ...state.from,
-                    currency: action.payload.data.base
-                },
-                toes: state.toes.map(to => {
-                    return {
-                        ...to,
-                        amount: state.from.amount * action.payload.data.rates[to.currency]
-                    }
-                }),
+                converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
+                    ...converter,
+                    rates: action.payload.res.data.rates,
+                    from: {
+                        ...state.from,
+                        currency: action.payload.res.data.base
+                    },
+                    toes: converter.toes.map(to => {
+                        return {
+                            ...to,
+                            amount: converter.from.amount * action.payload.res.data.rates[to.currency]
+                        }
+                    }),
+                } : converter),
             };
 
         case ACTION_TYPES.CHANGE_FROM_AMOUNT:
             return {
                 ...state,
-                from: {
-                    ...state.from,
-                    amount: action.payload
-                },
-                toes: state.toes.map(to => {
-                    return {
-                        ...to,
-                        amount: action.payload * state.rates[to.currency]
-                    }
-                }),
+                converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
+                    ...converter,
+                    from: {
+                        ...state.from,
+                        amount: action.payload.amount
+                    },
+                    toes: converter.toes.map(to => {
+                        return {
+                            ...to,
+                            amount: action.payload.amount * converter.rates[to.currency]
+                        }
+                    }),
+                } : converter)
             };
 
         case ACTION_TYPES.CHANGE_TO_CURRENCY:
             return {
                 ...state,
-                toes: state.toes.map(to => to.id === action.payload.id ? {
-                    ...to,
-                    currency: action.payload.currency,
-                    amount: state.from.amount * state.rates[action.payload.currency]
-                } : to),
+                converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
+                    ...converter,
+                    toes: converter.toes.map(to => to.id === action.payload.id ? {
+                        ...to,
+                        currency: action.payload.currency,
+                        amount: converter.from.amount * converter.rates[action.payload.currency]
+                    } : to),
+                } : converter)
             };
 
         case ACTION_TYPES.ADD_TO:
             return {
                 ...state,
-                toes: [
-                    ...state.toes,
-                    {
-                        id: state.toes[state.toes.length - 1].id + 1,
-                        currency: state.toes[state.toes.length - 1].currency,
-                        amount: state.toes[state.toes.length - 1].amount
-                    }
-                ]
+                converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
+                    ...converter,
+                    toes: [
+                        ...converter.toes,
+                        {
+                            id: converter.toes[converter.toes.length - 1].id + 1,
+                            currency: converter.toes[converter.toes.length - 1].currency,
+                            amount: converter.toes[converter.toes.length - 1].amount
+                        }
+                    ]
+                } : converter)
             };
 
         case ACTION_TYPES.REMOVE_TO:
             return {
                 ...state,
-                toes: [
-                    ...state.toes.filter(toEl => toEl.id !== action.payload),
-                ]
+                converters: state.converters.map(converter => converter.id === action.payload.converterId ? {
+                    ...converter,
+                    toes: [
+                        ...converter.toes.filter(toEl => toEl.id !== action.payload.id),
+                    ]
+                } : converter)
             };
 
         default:
@@ -110,17 +133,18 @@ export default (state = initialState, action) => {
     }
 };
 
-export const change_from_currency = (base) => async (dispatch) => {
+export const change_from_currency = (base, converterId) => async (dispatch) => {
+    const res = await axios.get(`https://api.exchangeratesapi.io/latest?base=${base}`);
     dispatch({
         type: ACTION_TYPES.CHANGE_FROM_CURRENCY,
-        payload: await axios.get(`https://api.exchangeratesapi.io/latest?base=${base}`)
+        payload: { res, converterId }
     });
 };
 
-export const change_from_amount = (amount) => {
+export const change_from_amount = (amount, converterId) => {
     return {
         type: ACTION_TYPES.CHANGE_FROM_AMOUNT,
-        payload: amount
+        payload: { amount, converterId }
     };
 };
 
@@ -131,23 +155,23 @@ export const get_initial_values = () => async (dispatch) => {
     });
 };
 
-export const change_to_currency = (currency, id) => {
+export const change_to_currency = (currency, id, converterId) => {
     return {
         type: ACTION_TYPES.CHANGE_TO_CURRENCY,
-        payload: { currency, id }
+        payload: { currency, id, converterId }
     };
 };
 
-export const add_to = () => {
+export const add_to = (converterId) => {
     return {
         type: ACTION_TYPES.ADD_TO,
-        payload: []
+        payload: converterId
     };
 };
 
-export const remove_to = (id) => {
+export const remove_to = (id, converterId) => {
     return {
         type: ACTION_TYPES.REMOVE_TO,
-        payload: id
+        payload: { id, converterId }
     }
 }

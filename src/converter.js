@@ -8,34 +8,31 @@ import AddIcon from "./icons/add.svg";
 import ChangeIcon from "./icons/change.svg";
 
 const Converter = (props) => {
-    const { change_from_currency, change_from_amount, change_to_currency, get_initial_values, add_to, toes, remove_to } = props;
-
-    useEffect(() => {
-        get_initial_values();
-    }, []);
-
+    const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to } = props;
     return (
         <Wrapper>
             <Inputs>
                 <CustomInputFrom
-                    currencyChange={(e) => change_from_currency(e.target.value)}
-                    amountChange={(e) => change_from_amount(e.target.value)}
+                    currencyChange={(e) => change_from_currency(e.target.value, props.converterId)}
+                    amountChange={(e) => change_from_amount(e.target.value, props.converterId)}
+                    addClicked={() => add_to(props.converterId)}
+                    currencies={props.currencies}
+                    defFromCurr={props.defFromCurr}
                 />
-
                 <img src={ChangeIcon} className="change" />
 
                 <Wrapper2>
                     <h2>TO</h2>
-
                     <Toes>
-                        {toes.map((to) =>
+                        {props.toes.map((to) =>
                             <CustomInputTo
                                 key={to.id}
                                 toCurrency={to.currency}
                                 toAmount={to.amount}
                                 iconDisplay={to.id === 1 ? "none" : "block"}
-                                toCurrencyChange={(e) => change_to_currency(e.target.value, to.id)}
-                                removeTo={() => remove_to(to.id)}
+                                toCurrencyChange={(e) => change_to_currency(e.target.value, to.id, props.converterId)}
+                                removeTo={() => remove_to(to.id, props.converterId)}
+                                currencies={props.currencies}
                             />
                         )}
                     </Toes>
@@ -47,13 +44,6 @@ const Converter = (props) => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    currencies: state.currencies,
-    state: state,
-    toes: state.toes
-});
-
-
 const mapDispatchToProps = {
     change_from_currency,
     change_from_amount,
@@ -63,7 +53,7 @@ const mapDispatchToProps = {
     remove_to
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Converter);
+export default connect(null, mapDispatchToProps)(Converter);
 
 
 const Wrapper2 = styled.div``;
@@ -94,5 +84,5 @@ const Inputs = styled.div`
 const Wrapper = styled.div`
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; 
 `;
