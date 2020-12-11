@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { getCurrencies } from "./store";
 import { connect } from "react-redux";
 import axios from "axios";
+import AddIcon from "./icons/add.svg";
 
 const Converter = (props) => {
     const [from, setFrom] = useState({ currency: "", amount: 0 });
@@ -40,34 +41,33 @@ const Converter = (props) => {
         temporaryArray[index]["currency"] = e.target.value;
         temporaryArray.map(array => array.amount = from.amount * rates[array.currency]);
         setTo(temporaryArray);
-
     };
 
     const addCurrencyHandler = () => {
         setTo(prevState => [...prevState, { id: prevState[prevState.length - 1].id + 1, currency: "", amount: 0 }]);
-        console.log(to);
     };
 
     const removeToHandler = (id) => {
         setTo(prevState => [...prevState.filter(el => el.id !== id)]);
-        console.log(to);
-    }
+    };
 
     return (
         <Wrapper>
-            <CustomInputFrom selectChange={fromSelectFieldChange} inputChange={fromAmountFieldChange} />
-            <div className="equal"><span /><span /></div>
-            {to.map((el) =>
-                <CustomInputTo
-                    key={el.id}
-                    selectChange={(e) => toSelectFieldChange(e, el.id)}
-                    number={el.amount}
-                    toLength={to.length}
-                    iconDisplay={el.id === 1 ? "none" : "block"}
-                    removeTo={() => removeToHandler(el.id)}
-                />
-            )}
-            <CustomButton whenClicked={addCurrencyHandler} />
+            <Inputs>
+                <CustomInputFrom selectChange={fromSelectFieldChange} inputChange={fromAmountFieldChange} />
+                <div className="equal"><span /><span /></div>
+                {to.map((el) =>
+                    <CustomInputTo
+                        key={el.id}
+                        selectChange={(e) => toSelectFieldChange(e, el.id)}
+                        number={el.amount}
+                        toLength={to.length}
+                        iconDisplay={el.id === 1 ? "none" : "block"}
+                        removeTo={() => removeToHandler(el.id)}
+                    />
+                )}
+                <img src={AddIcon} onClick={addCurrencyHandler} />
+            </Inputs>
         </Wrapper>
     );
 };
@@ -78,12 +78,21 @@ const mapDispatchToProps = {
 
 export default connect(null, mapDispatchToProps)(Converter);
 
+const Inputs = styled.div`
+    display: flex;
+    overflow-x: auto;
+    align-items: center;
+
+    img {
+        width: 50px;
+        cursor: pointer;
+    }
+`;
+
 const Wrapper = styled.div`
     display: flex;
-    flex-wrap: wrap;
-    width: auto; 
+    justify-content: center;
     align-items: center;
-    overflow: auto;
 
     .equal {
         width: 100px;

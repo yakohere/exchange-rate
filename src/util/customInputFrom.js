@@ -5,7 +5,7 @@ const CustomInputFrom = (props) => {
     return (
         <Wrapper>
             <Select onChange={props.selectChange}>
-                <option defaultValue="selected">SELECT</option>
+                <option defaultValue="selected">{props.currencies[0]}</option>
                 {props.currencies.map(currency => <option key={currency}>{currency}</option>)}
             </Select>
             <Input type="number" onChange={props.inputChange} defaultValue="0" />
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
     width: 250px;
     height: 50px;
     display: flex;
+    justify-content: space-between;
     border: 2px solid #2600ff;
     box-shadow: 0px 0px 10px 0px rgba(38,0,255,0.5);
     border-radius: 5px;
@@ -30,7 +31,7 @@ const Wrapper = styled.div`
 `;
 
 const Select = styled.select`
-    border: none;
+    border: none; 
     border-radius: 5px;
     outline: none;
     font-weight: 700;
@@ -38,7 +39,7 @@ const Select = styled.select`
 `;
 
 const Input = styled.input`
-    width: 55%; 
+    width: 160px;  
     border: none;
     border-radius: 5px;
     outline: none; 
