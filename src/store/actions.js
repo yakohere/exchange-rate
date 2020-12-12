@@ -50,3 +50,10 @@ export const add_converter = () => async (dispatch) => {
         payload: await axios.get("https://api.exchangeratesapi.io/latest")
     });
 };
+
+export const remove_converter = (id) => {
+    return {
+        type: ACTION_TYPES.REMOVE_CONVERTER,
+        payload: id
+    }
+}

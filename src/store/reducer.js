@@ -90,7 +90,7 @@ export default (state = initialState, action) => {
                 } : converter)
             };
 
-        case ACTION_TYPES.ADD_TO: 
+        case ACTION_TYPES.ADD_TO:
             return {
                 ...state,
                 converters: state.converters.map(converter => converter.id === action.payload ? {
@@ -140,6 +140,14 @@ export default (state = initialState, action) => {
                     }
                 ]
             };
+
+        case ACTION_TYPES.REMOVE_CONVERTER:
+            return {
+                ...state,
+                converters: [
+                    ...state.converters.filter(coEl => coEl.id !== action.payload),
+                ]
+            }
 
         default:
             return state;

@@ -1,16 +1,27 @@
 import CustomInputFrom from "./util/customInputFrom";
 import CustomInputTo from "./util/customInputTo";
 import styled from "styled-components";
-import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to, remove_to } from "./store/actions";
+import { change_from_currency, change_from_amount, get_initial_values, change_to_currency, add_to, remove_to, remove_converter } from "./store/actions";
 import { connect } from "react-redux";
 import AddIcon from "./icons/add.svg";
 import ArrowIcon from "./icons/arrow.svg";
+import RemoveIcon from "./icons/delete.svg";
 
 const Converter = (props) => {
-    const { change_from_currency, change_from_amount, change_to_currency, add_to, remove_to, converterId, currencies, defFromCurr, toes, fromAmount } = props;
+    const
+        {
+            change_from_currency, change_from_amount, change_to_currency,
+            add_to, remove_to,
+            converterId, currencies, defFromCurr, toes, fromAmount, remove_converter } = props;
 
     return (
         <Wrapper>
+            {
+                converterId > 1 ?
+                    <img className="removeIcon" src={RemoveIcon} onClick={() => remove_converter(converterId)} />
+                    :
+                    <div className="placeHolder" />
+            }
             <Inputs>
                 <CustomInputFrom
                     currencyChange={(e) => change_from_currency(e.target.value, converterId)}
@@ -49,7 +60,8 @@ const mapDispatchToProps = {
     get_initial_values,
     change_to_currency,
     add_to,
-    remove_to
+    remove_to,
+    remove_converter
 };
 
 export default connect(null, mapDispatchToProps)(Converter);
@@ -57,6 +69,18 @@ export default connect(null, mapDispatchToProps)(Converter);
 const Wrapper = styled.div`
     display: flex;   
     margin: 10px 0; 
+
+    .removeIcon{
+        margin: 0;
+        margin: 0 10px;
+        width: 25px; 
+    }
+
+    .placeHolder{
+        margin: 0;
+        margin: 0 10px;
+        width: 25px;
+    }
 `;
 
 const Toes = styled.div`
